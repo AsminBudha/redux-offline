@@ -58,6 +58,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
+    "is-online": "^8.2.0",
     "redux-persist": "^4.6.0"
   },
   "peerDependencies": {

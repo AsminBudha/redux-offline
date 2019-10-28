@@ -1,5 +1,6 @@
 /* eslint no-underscore-dangle: 0 */
-import { AppState, NetInfo } from 'react-native'; // eslint-disable-line
+import { AppState, NetInfo } from "react-native"; // eslint-disable-line
+import isOnline from "is-online";
 
 class LegacyDetectNetwork {
   constructor(callback) {
@@ -55,7 +56,9 @@ class LegacyDetectNetwork {
    * @returns {void}
    * @private
    */
-  _getConnection = reach => reach !== 'NONE' && reach !== 'UNKNOWN';
+  _getConnection = async () => isOnline(); // reach => reach !== "NONE" && reach !== "UNKNOWN";
+
+  // _isInternetReachable = async () => isOnline();
 
   /**
    * Sets the isConnectionExpensive prop
@@ -119,11 +122,11 @@ class LegacyDetectNetwork {
    * @private
    */
   _addListeners() {
-    NetInfo.addEventListener('change', reach => {
+    NetInfo.addEventListener("change", reach => {
       this._setShouldInitUpdateReach(false);
       this._update(reach);
     });
-    AppState.addEventListener('change', async () => {
+    AppState.addEventListener("change", async () => {
       this._setShouldInitUpdateReach(false);
       const reach = await NetInfo.fetch();
       this._update(reach);

@@ -1,6 +1,7 @@
 /* eslint no-underscore-dangle: 0 */
-import { AppState, NetInfo } from 'react-native'; // eslint-disable-line
-import LegacyDetectNetwork from './detectNetwork.native.legacy';
+import { AppState, NetInfo } from "react-native"; // eslint-disable-line
+import LegacyDetectNetwork from "./detectNetwork.native.legacy";
+import isOnline from "is-online";
 
 class DetectNetwork {
   constructor(callback) {
@@ -53,7 +54,7 @@ class DetectNetwork {
    * @returns {void}
    * @private
    */
-  _getConnection = reach => reach !== 'none' && reach !== 'unknown';
+  _getConnection = async () => isOnline(); // reach => reach !== "none" && reach !== "unknown";
 
   /**
    * Sets the isConnectionExpensive prop
@@ -115,11 +116,11 @@ class DetectNetwork {
    * @private
    */
   _addListeners() {
-    NetInfo.addEventListener('connectionChange', connectionInfo => {
+    NetInfo.addEventListener("connectionChange", connectionInfo => {
       this._setShouldInitUpdateReach(false);
       this._update(connectionInfo.type);
     });
-    AppState.addEventListener('change', async () => {
+    AppState.addEventListener("change", async () => {
       this._setShouldInitUpdateReach(false);
       const connectionInfo = await NetInfo.getConnectionInfo();
       this._update(connectionInfo.type);
@@ -144,6 +145,6 @@ class DetectNetwork {
   };
 }
 
-const isLegacy = typeof NetInfo.getConnectionInfo === 'undefined';
+const isLegacy = typeof NetInfo.getConnectionInfo === "undefined";
 export default callback =>
   isLegacy ? new LegacyDetectNetwork(callback) : new DetectNetwork(callback);
